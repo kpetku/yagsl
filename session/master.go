@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"yagsl/sambridge"
+	"github.com/kpetku/yagsl/sambridge"
 )
 
 const masterSessionStyle string = "MASTER"

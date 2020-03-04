@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"net"
 	"time"
-	"yagsl/sambridge"
+
+	"github.com/kpetku/yagsl/sambridge"
 )
 
 type Subsession struct {
