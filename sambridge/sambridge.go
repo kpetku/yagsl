@@ -26,8 +26,8 @@ type SamOptions struct {
 
 const handshakeReply string = "HELLO VERSION MIN=3.0 MAX=3.3\n"
 
-func (s *SAMBridge) Start() {
-	s.Options.Address = "127.0.0.1:7656"
+func (s *SAMBridge) Start(hostAndPort string) {
+	s.Options.Address = hostAndPort
 	err := s.dialSAMBridge()
 	if err != nil {
 		panic(err.Error())

@@ -30,10 +30,10 @@ type MasterSession struct {
 	// i2cp and streaming options go here
 }
 
-func NewMasterSession(destination string) (MasterSession, error) {
+func NewMasterSession(hostAndPort string, destination string) (MasterSession, error) {
 	sb := new(sambridge.SAMBridge)
-	sb.Options.Address = "127.0.0.1:7656"
-	go sb.Start()
+	sb.Options.Address = hostAndPort
+	go sb.Start(hostAndPort)
 	ms := MasterSession{Style: "MASTER"}
 	ms.Ready = make(chan bool, 1)
 	if destination == "" {
@@ -99,6 +99,5 @@ func (ms *MasterSession) newStreamHandler() {
 		log.Printf("StreamReply err: %s", streamReply.Err.Error())
 	} else {
 		log.Printf("StreamReply success!")
-
 	}
 }

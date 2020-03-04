@@ -21,9 +21,9 @@ var (
 	errSubSessionFailed = errors.New("the subsession failed :(")
 )
 
-func NewStreamConnect(ID string, destination string, fromPort string) (Subsession, error) {
+func NewStreamConnect(hostAndPort string, ID string, destination string, fromPort string) (Subsession, error) {
 	sb := new(sambridge.SAMBridge)
-	go sb.Start()
+	go sb.Start(hostAndPort)
 	ss := Subsession{
 		Style: "STREAM",
 		ID:    ID,
@@ -38,9 +38,9 @@ func NewStreamConnect(ID string, destination string, fromPort string) (Subsessio
 	return ss, err
 }
 
-func NewStreamAccept(ID string) (Subsession, error) {
+func NewStreamAccept(hostAndPort string, ID string) (Subsession, error) {
 	sb := new(sambridge.SAMBridge)
-	go sb.Start()
+	go sb.Start(hostAndPort)
 	ss := Subsession{
 		Style: "STREAM",
 		ID:    ID,
