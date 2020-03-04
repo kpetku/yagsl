@@ -32,28 +32,28 @@ func (s *SAMBridge) Start() {
 	if err != nil {
 		panic(err.Error())
 	}
-	r := bufio.NewReader(s.Conn)
+	scanner := bufio.NewScanner(s.Conn)
 	for {
-		line, _ := r.ReadString('\n')
-		if line != "" {
-			log.Printf("DEBUG line: %s", line)
+		if ok := scanner.Scan(); !ok {
+			break
 		}
-		if strings.Contains(line, " ") {
-			first := strings.Fields(line)[0]
+		log.Printf("DEBUG line: %s", scanner.Text())
+		if strings.Contains(scanner.Text(), " ") {
+			first := strings.Fields(scanner.Text())[0]
 			switch first {
 			case "HELLO":
-				go s.handshakeReply(line)
+				go s.handshakeReply(scanner.Text())
 			case "SESSION":
-				s.sessionReply(line)
+				s.sessionReply(scanner.Text())
 			case "STREAM":
 				// TODO: Wait for an "OK" STREAM result and as soon as that happens break out of the loop so we can panic on unknown sam lines
-				s.streamReply(line)
+				s.streamReply(scanner.Text())
 			case "DEST":
-				s.destReply(line)
+				s.destReply(scanner.Text())
 			case "NAMING":
-				s.namingReply(line)
+				s.namingReply(scanner.Text())
 			case "PING":
-				go s.pingReply(line)
+				go s.pingReply(scanner.Text())
 			default:
 				//panic("Unknown SAM line encountered")
 			}
