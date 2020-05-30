@@ -1,7 +1,6 @@
 package sambridge
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -18,9 +17,11 @@ type destHandler struct {
 	m        sync.Mutex
 }
 
-func (m SAMBridge) DestGenerate(signatureType string) (DestReply, error) {
+func (m *SAMBridge) DestGenerate(signatureType string) (DestReply, error) {
 	var destReply DestReply
-	m.newDestHandler()
+	dh := new(destHandler)
+	dh.incoming = make(chan DestReply)
+	m.destHandler = dh
 
 	if signatureType == "" {
 		signatureType = "DSA_SHA1"
@@ -39,16 +40,10 @@ func (m SAMBridge) DestGenerate(signatureType string) (DestReply, error) {
 func (m SAMBridge) destReply(reply string) {
 	dest := DestReply{}
 	fields := strings.Fields(reply)
-	m.destHandler.m.Lock()
-	if fields[2] != "RESULT=OK" {
-		dest.err = errors.New(strings.TrimRight(strings.TrimLeft(strings.Join(fields[3:], " "), "MESSAGE=\""), "\""))
-	} else {
-		dest.Pub = strings.TrimPrefix(fields[2], "PUB=")
-		dest.Priv = strings.TrimPrefix(fields[3], "PRIV=")
-		dest.err = nil
-	}
+	dest.Pub = strings.TrimPrefix(fields[2], "PUB=")
+	dest.Priv = strings.TrimPrefix(fields[3], "PRIV=")
+	dest.err = nil
 	m.destHandler.incoming <- dest
-	m.destHandler.m.Unlock()
 }
 
 func (s SAMBridge) pingReply(reply string) error {

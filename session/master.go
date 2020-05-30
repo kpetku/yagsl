@@ -51,7 +51,7 @@ func NewMasterSession(hostAndPort string, destination string) (MasterSession, er
 	ms.Destination = destination
 
 	time.Sleep(time.Second * 1)
-	ms.Sam.Send(fmt.Sprintf("SESSION CREATE STYLE=MASTER ID=%s DESTINATION=%s\n", ms.ID, ms.Destination))
+	ms.Sam.Send(fmt.Sprintf("SESSION CREATE STYLE=MASTER ID=%s DESTINATION=%s SIGNATURE_TYPE=RedDSA_SHA512_Ed25519\n", ms.ID, ms.Destination))
 	for ready := range ms.Ready {
 		if ready {
 			return ms, nil

@@ -26,11 +26,11 @@ type SamOptions struct {
 
 const handshakeReply string = "HELLO VERSION MIN=3.0 MAX=3.3\n"
 
-func (s *SAMBridge) Start(hostAndPort string) {
+func (s *SAMBridge) Start(hostAndPort string) error {
 	s.Options.Address = hostAndPort
 	err := s.dialSAMBridge()
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	scanner := bufio.NewScanner(s.Conn)
 	for {
@@ -59,6 +59,7 @@ func (s *SAMBridge) Start(hostAndPort string) {
 			}
 		}
 	}
+	return nil
 }
 
 func (s *SAMBridge) dialSAMBridge() error {
